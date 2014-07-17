@@ -1,0 +1,35 @@
+<MvASSIGN NAME = "l.active" VALUE = "y">
+<MvASSIGN NAME = "l.home" 	VALUE = "n">
+
+<MvOPEN NAME 		= "CMS_V2" 
+		DATABASE 	= "DBNAME@localhost" 
+		TYPE 		= "mysql"
+        USERNAME 	= "{ 'DBUSER' }" 
+		PASSWORD 	= "{ 'DBPASS' }">
+
+<MvOPENVIEW NAME 	= "CMS_V2" 
+			VIEW 	= "Testimonials" 
+			QUERY 	= "{ 'SELECT
+							* 
+						  FROM
+						  	fb_mod_testimonials
+						  WHERE
+						  	mod_tstm_active	= ? AND 
+						  	mod_tstm_home	= ? AND 
+							mod_tstm_id >= FLOOR( 1 + RAND() * ( SELECT MAX(mod_tstm_id) FROM fb_mod_testimonials ) )
+						  LIMIT 1' }"
+			FIELDS 	= "l.active, l.home">
+
+<MvIF EXPR = "{ g.debug }">
+	<MvEVAL EXPR = "{ '
+		Content: ' 	$ Testimonials.d.mod_tstm_content $ ' <br>
+		Name: ' 	$ Testimonials.d.mod_tstm_name $ ' <br>
+		Company: ' 	$ Testimonials.d.mod_tstm_company $ ' <br>
+		Home: ' 	$ Testimonials.d.mod_tstm_home $ ' <br>
+		Active: ' 	$ Testimonials.d.mod_tstm_active
+	}">
+<MvELSE>
+	<MvASSIGN NAME = "g.tstm_content" VALUE = "{ Testimonials.d.mod_tstm_content }">
+	<MvASSIGN NAME = "g.tstm_name" VALUE = "{ Testimonials.d.mod_tstm_name }"> 
+</MvIF>
+
